@@ -85,78 +85,20 @@ TILE_DEFINITIONS = {
     46: (26, ['TL', 'TR', 'BL', 'BR']),
 }
 
-TILE_BORDERS = {
-    0:  (True,  True,  True,  True),
-    1:  (True,  True,  True,  False),
-    2:  (True,  True,  False, False),
-    3:  (True,  True,  False, True),
-    12: (True,  False, True,  True),
-    13: (True,  False, True,  False),
-    14: (True,  False, False, False),
-    15: (True,  False, False, True),
-    24: (False, False, True,  True),
-    25: (False, False, True,  False),
-    26: (False, False, False, False),
-    27: (False, False, False, True),
-    36: (False, True,  True,  True),
-    37: (False, True,  True,  False),
-    38: (False, True,  False, False),
-    39: (False, True,  False, True),
-}
-
 def generate_tiles(collage_img, bw=12):
     """
     Extracts all 47 CTM tiles from a 512x512 collage.
-    - Preserves the artist's authentic hand-crafted metal borders, outer corners, and bolts.
-    - In the glass interior, connects seamless luminous flow:
-      edges with metal borders have the gentle bevel shadow, while
-      connected/open edges stay at full luminous brightness, eliminating
-      dark seams, eccentric/off-center bulbs, and weird cross lines.
+    - Pure cardinal tiles (0, 1, 2, 3, 12, 13, 14, 15, 24, 25, 26, 27, 36, 37, 38, 39)
+      are preserved directly from the artist's hand-crafted tiles for 100% pixel-perfect
+      corners, bolts, edges, centered bulbs, and smooth continuous interior glow without slicing artifacts.
     - Remaining 31 tiles use their base cardinal tile + clean corner bezel caps at inner corners.
     """
     cardinal_tiles = {}
-    
-    # Standalone tile 0:
-    iso = collage_img.crop((0, 0, 128, 128))
-    arr_iso = np.array(iso)
-    profile = arr_iso[64, bw:65, :].copy() # shape (53, 4)
-    max_d = len(profile) - 1
-    
-    y_idx = np.arange(128).reshape(-1, 1)
-    x_idx = np.arange(128).reshape(1, -1)
-    
     for tile_id, (r, c) in CARDINAL_ROW_COL.items():
         box = (c * 128, r * 128, (c + 1) * 128, (r + 1) * 128)
-        orig_tile = collage_img.crop(box)
-        
-        if tile_id == 0:
-            cardinal_tiles[0] = orig_tile
-            continue
-            
-        arr_tile = np.array(orig_tile)
-        has_t, has_b, has_l, has_r = TILE_BORDERS[tile_id]
-        
-        y_min = bw if has_t else 0
-        y_max = 128 - bw if has_b else 128
-        x_min = bw if has_l else 0
-        x_max = 128 - bw if has_r else 128
-        
-        d_grid = np.full((128, 128), max_d, dtype=np.int32)
-        if has_t:
-            d_grid = np.minimum(d_grid, np.maximum(0, y_idx - bw))
-        if has_b:
-            d_grid = np.minimum(d_grid, np.maximum(0, 127 - bw - y_idx))
-        if has_l:
-            d_grid = np.minimum(d_grid, np.maximum(0, x_idx - bw))
-        if has_r:
-            d_grid = np.minimum(d_grid, np.maximum(0, 127 - bw - x_idx))
-            
-        glass_mask = (y_idx >= y_min) & (y_idx < y_max) & (x_idx >= x_min) & (x_idx < x_max)
-        new_arr = arr_tile.copy()
-        new_arr[glass_mask] = profile[d_grid[glass_mask]]
-        
-        cardinal_tiles[tile_id] = Image.fromarray(new_arr)
+        cardinal_tiles[tile_id] = collage_img.crop(box)
 
+    iso = cardinal_tiles[0]
     cap_tl = iso.crop((0, 0, bw, bw))
     cap_tr = iso.crop((128 - bw, 0, 128, bw))
     cap_bl = iso.crop((0, 128 - bw, bw, 128))
@@ -178,6 +120,7 @@ def generate_tiles(collage_img, bw=12):
         tiles[tile_idx] = img
 
     return tiles, iso
+
 
 # Ensure output directories exist
 os.makedirs(OPTIFINE_CTM_DIR, exist_ok=True)
