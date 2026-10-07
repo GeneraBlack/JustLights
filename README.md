@@ -1,9 +1,13 @@
-# 🕯️ JustLights — Ultra-HD Colored Lighting & Rustic Fixtures
+<div align="center">
+  <img src="logo.png" alt="JustLights Logo" width="240"/>
+  <h1>🕯️ JustLights</h1>
+  <p><strong>Ultra-HD Colored Lighting & Rustic Fixtures for Minecraft 1.21.1</strong></p>
 
-[![Minecraft 1.21.1](https://img.shields.io/badge/Minecraft-1.21.1-brightgreen.svg)](https://curseforge.com)
-[![NeoForge](https://img.shields.io/badge/Modloader-NeoForge-orange.svg)](https://neoforged.net)
-[![Shader Compatible](https://img.shields.io/badge/Shaders-Iris%20%7C%20BSL%20%7C%20Complementary-blue.svg)](https://curseforge.com)
-[![Resolution](https://img.shields.io/badge/Textures-128x128%20Ultra--HD-purple.svg)](https://curseforge.com)
+  [![Minecraft 1.21.1](https://img.shields.io/badge/Minecraft-1.21.1-brightgreen.svg)](https://curseforge.com)
+  [![NeoForge](https://img.shields.io/badge/Modloader-NeoForge-orange.svg)](https://neoforged.net)
+  [![Shader Compatible](https://img.shields.io/badge/Shaders-Iris%20%7C%20BSL%20%7C%20Complementary-blue.svg)](https://curseforge.com)
+  [![Resolution](https://img.shields.io/badge/Textures-128x128%20Ultra--HD-purple.svg)](https://curseforge.com)
+</div>
 
 **JustLights** brings true, vibrant, colored illumination to Minecraft 1.21.1. Designed from the ground up for high-resolution texture packs, rustic town-building, and high-end shaders (**Iris, Sodium, Complementary Reimagined & BSL**), JustLights transforms your builds with handcrafted **128×128 Ultra-HD textures**, dynamic **Connected Textures (CTM)**, and **real colored light radiance** that illuminates surrounding walls and fog.
 
