@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "S": {
+      "item": "minecraft:stick"
+    },
+    "T": {
+      "item": "justlights:yellow_torch"
+    },
+    "L": {
+      "tag": "minecraft:logs"
+    }
+  },
+  "pattern": [
+    " S ",
+    "STS",
+    "LLL"
+  ],
+  "result": {
+    "count": 1,
+    "id": "justlights:yellow_campfire"
+  }
+}

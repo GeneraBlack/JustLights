@@ -1,0 +1,40 @@
+{
+  "variants": {
+    "auto=false,brightness=1,lit=false": {
+      "model": "justlights:block/magenta_lamp_off"
+    },
+    "auto=false,brightness=1,lit=true": {
+      "model": "justlights:block/magenta_lamp"
+    },
+    "auto=false,brightness=2,lit=false": {
+      "model": "justlights:block/magenta_lamp_off"
+    },
+    "auto=false,brightness=2,lit=true": {
+      "model": "justlights:block/magenta_lamp"
+    },
+    "auto=false,brightness=3,lit=false": {
+      "model": "justlights:block/magenta_lamp_off"
+    },
+    "auto=false,brightness=3,lit=true": {
+      "model": "justlights:block/magenta_lamp"
+    },
+    "auto=true,brightness=1,lit=false": {
+      "model": "justlights:block/magenta_lamp_off"
+    },
+    "auto=true,brightness=1,lit=true": {
+      "model": "justlights:block/magenta_lamp"
+    },
+    "auto=true,brightness=2,lit=false": {
+      "model": "justlights:block/magenta_lamp_off"
+    },
+    "auto=true,brightness=2,lit=true": {
+      "model": "justlights:block/magenta_lamp"
+    },
+    "auto=true,brightness=3,lit=false": {
+      "model": "justlights:block/magenta_lamp_off"
+    },
+    "auto=true,brightness=3,lit=true": {
+      "model": "justlights:block/magenta_lamp"
+    }
+  }
+}

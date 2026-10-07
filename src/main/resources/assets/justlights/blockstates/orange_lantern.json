@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "hanging=false": {
+      "model": "justlights:block/orange_lantern"
+    },
+    "hanging=true": {
+      "model": "justlights:block/orange_lantern_hanging"
+    }
+  }
+}

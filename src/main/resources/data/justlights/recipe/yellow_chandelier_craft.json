@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "C": {
+      "item": "minecraft:chain"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "T": {
+      "item": "justlights:yellow_torch"
+    }
+  },
+  "pattern": [
+    " T ",
+    "ICI",
+    "TIT"
+  ],
+  "result": {
+    "count": 1,
+    "id": "justlights:yellow_chandelier"
+  }
+}

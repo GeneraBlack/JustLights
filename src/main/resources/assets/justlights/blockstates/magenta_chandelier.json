@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "hanging=false": {
+      "model": "justlights:block/magenta_chandelier_standing"
+    },
+    "hanging=true": {
+      "model": "justlights:block/magenta_chandelier_hanging"
+    }
+  }
+}

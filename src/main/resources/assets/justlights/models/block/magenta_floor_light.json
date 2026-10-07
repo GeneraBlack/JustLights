@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "top": "justlights:block/magenta_floor_light_top",
+    "bottom": "justlights:block/floor_light_side",
+    "side": "justlights:block/floor_light_side"
+  }
+}

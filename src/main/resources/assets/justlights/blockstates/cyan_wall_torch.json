@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "justlights:block/cyan_wall_torch"
+    },
+    "facing=north": {
+      "model": "justlights:block/cyan_wall_torch",
+      "y": 270
+    },
+    "facing=south": {
+      "model": "justlights:block/cyan_wall_torch",
+      "y": 90
+    },
+    "facing=west": {
+      "model": "justlights:block/cyan_wall_torch",
+      "y": 180
+    }
+  }
+}

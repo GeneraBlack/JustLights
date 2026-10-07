@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/template_torch",
+  "textures": {
+    "torch": "justlights:block/magenta_underwater_torch"
+  }
+}

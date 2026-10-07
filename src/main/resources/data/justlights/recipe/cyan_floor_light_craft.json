@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "L": {
+      "item": "justlights:cyan_lamp"
+    }
+  },
+  "pattern": [
+    " I ",
+    "ILI",
+    " I "
+  ],
+  "result": {
+    "count": 1,
+    "id": "justlights:cyan_floor_light"
+  }
+}

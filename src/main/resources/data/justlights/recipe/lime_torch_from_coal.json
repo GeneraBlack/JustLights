@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "C": {
+      "tag": "minecraft:coals"
+    },
+    "D": {
+      "item": "minecraft:lime_dye"
+    },
+    "S": {
+      "item": "minecraft:stick"
+    }
+  },
+  "pattern": [
+    "C",
+    "D",
+    "S"
+  ],
+  "result": {
+    "count": 4,
+    "id": "justlights:lime_torch"
+  }
+}

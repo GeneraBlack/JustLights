@@ -1,0 +1,9 @@
+{
+  "fusion": {
+    "type": "fusion:connecting",
+    "layout": "simple",
+    "connections": {
+      "type": "fusion:is_same_state"
+    }
+  }
+}

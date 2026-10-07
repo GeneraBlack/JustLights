@@ -1,0 +1,22 @@
+{
+  "variants": {
+    "brightness=1,lit=false": {
+      "model": "justlights:block/light_blue_floor_light_off"
+    },
+    "brightness=1,lit=true": {
+      "model": "justlights:block/light_blue_floor_light"
+    },
+    "brightness=2,lit=false": {
+      "model": "justlights:block/light_blue_floor_light_off"
+    },
+    "brightness=2,lit=true": {
+      "model": "justlights:block/light_blue_floor_light"
+    },
+    "brightness=3,lit=false": {
+      "model": "justlights:block/light_blue_floor_light_off"
+    },
+    "brightness=3,lit=true": {
+      "model": "justlights:block/light_blue_floor_light"
+    }
+  }
+}

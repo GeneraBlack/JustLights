@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    {
+      "item": "minecraft:carved_pumpkin"
+    },
+    {
+      "item": "justlights:pink_torch"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "justlights:pink_jack_o_lantern"
+  }
+}

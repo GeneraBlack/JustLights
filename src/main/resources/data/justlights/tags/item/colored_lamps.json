@@ -1,0 +1,21 @@
+{
+  "replace": false,
+  "values": [
+    "justlights:white_lamp",
+    "justlights:orange_lamp",
+    "justlights:magenta_lamp",
+    "justlights:light_blue_lamp",
+    "justlights:yellow_lamp",
+    "justlights:lime_lamp",
+    "justlights:pink_lamp",
+    "justlights:gray_lamp",
+    "justlights:light_gray_lamp",
+    "justlights:cyan_lamp",
+    "justlights:purple_lamp",
+    "justlights:blue_lamp",
+    "justlights:brown_lamp",
+    "justlights:green_lamp",
+    "justlights:red_lamp",
+    "justlights:black_lamp"
+  ]
+}
