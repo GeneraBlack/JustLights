@@ -71,12 +71,31 @@ Whether you're decorating a medieval tavern, a sprawling town colony, an industr
 
 ---
 
-## 🎨 Shader Compatibility (Complementary & BSL)
+## 🎨 Shader Compatibility & Recommended Settings
 
-JustLights is built from the ground up for high-end shader packs:
-* **Complementary Reimagined / Euphoria Patches:** Pre-mapped to IDs `10900`–`10922` and configured for **Voxelized Colored Lighting (`COLORED_LIGHTING=512`)**. Every color casts its own realistic light radiance onto surrounding surfaces and fog.
-* **BSL Shaders:** Uses high-resolution emissive maps (`_e.png`) and LabPBR format to provide vibrant surface luminescence and bloom.
-* **Vanilla / Non-Shader:** Looks gorgeous even without shaders thanks to standalone 128×128 HD textures and vanilla light emissions (Light Level 15).
+JustLights is built from the ground up for high-end shaders (**Complementary Reimagined**, **Euphoria Patches**, and **BSL**).
+
+> [!TIP]
+> **Automatic Shader Integration:** JustLights automatically detects Complementary Reimagined and BSL in your `shaderpacks` folder upon game launch and configures them so colored lighting works seamlessly out-of-the-box!
+
+### 🌟 Recommended Complementary Settings (For Ultra-Vibrant Colored Radiance):
+To get the most dramatic, vivid, and atmospheric colored light rays and volumetric fog, open **Options → Video Settings → Shader Packs → Shader Options**:
+
+1. **Performance & Settings** (or **Other Settings**) → **ACT Features Settings**:
+   * **`Colored Candle Light`**: **ON** *(Essential: allows all 16 dye colors to cast colored voxel radiance)*
+   * **`Colored Light Saturation`**: **125%** *(Boosts color richness so it completely overrides bland yellowish light)*
+   * **`Colored Light Fog`**: **ON** *(Enables gorgeous volumetric godrays and colored atmosphere in the air)*
+   * **`Colored Light Fog Intensity`**: **1.00 – 1.50** *(Increases the intensity of colored light beams)*
+
+2. **Performance Settings**:
+   * **`Colored Lighting`**: **512** or **1024** *(Controls voxel volume radius and colored light distance)*
+
+3. **Lighting & Atmosphere** (Optional for Extra Coziness):
+   * **`Blocklight Flickering`**: **ON** *(Creates subtle cozy flame flicker for Torches, Lanterns & Campfires)*
+   * **`World Space Reflections`**: **ON** *(Reflects glowing colored lamps on wet floors, puddles, and water!)*
+
+### 💡 Non-Shader / Vanilla Experience
+Even without shaders, JustLights looks stunning! Every block features handcrafted **128×128 Ultra-HD textures** with brushed metal frames, wrought-iron rivets, rustic wood fibers, and bright vanilla light emission (Light Level 15).
 
 ---
 
