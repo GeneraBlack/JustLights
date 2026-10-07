@@ -25,6 +25,13 @@ public class JustLights {
         ModCreativeModeTabs.CREATIVE_MODE_TABS.register(modEventBus);
 
         modEventBus.addListener(this::onBlockEntityTypeAddBlocks);
+        modEventBus.addListener(this::onClientSetup);
+    }
+
+    private void onClientSetup(net.neoforged.fml.event.lifecycle.FMLClientSetupEvent event) {
+        event.enqueueWork(() -> {
+            net.justlights.client.ShaderpackIntegrator.integrateShaderpacks();
+        });
     }
 
     private void onBlockEntityTypeAddBlocks(BlockEntityTypeAddBlocksEvent event) {
