@@ -154,6 +154,7 @@ for color in COLORS:
         
     with open(os.path.join(dir_on, f"{color}_lamp_on.properties"), 'w', encoding='utf-8') as f:
         f.write(f"matchTiles=justlights:block/{color}_lamp_on\n")
+        f.write(f"matchBlocks=justlights:{color}_lamp\n")
         f.write(f"method=ctm\n")
         f.write(f"tiles=0-46\n")
         f.write(f"connect=tile\n")
@@ -167,6 +168,7 @@ for color in COLORS:
         
     with open(os.path.join(dir_off, f"{color}_lamp_off.properties"), 'w', encoding='utf-8') as f:
         f.write(f"matchTiles=justlights:block/{color}_lamp_off\n")
+        f.write(f"matchBlocks=justlights:{color}_lamp\n")
         f.write(f"method=ctm\n")
         f.write(f"tiles=0-46\n")
         f.write(f"connect=tile\n")
