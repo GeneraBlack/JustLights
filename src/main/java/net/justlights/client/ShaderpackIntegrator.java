@@ -118,6 +118,10 @@ public class ShaderpackIntegrator {
                         String content = new String(data, StandardCharsets.UTF_8);
                         content = patchBlockProperties(content);
                         data = content.getBytes(StandardCharsets.UTF_8);
+                    } else if ("shaders/lib/colors/blocklightColors.glsl".equals(srcEntry.getName())) {
+                        String content = new String(data, StandardCharsets.UTF_8);
+                        content = patchGlslColors(content);
+                        data = content.getBytes(StandardCharsets.UTF_8);
                     }
 
                     ZipEntry newEntry = new ZipEntry(srcEntry.getName());
@@ -149,11 +153,35 @@ public class ShaderpackIntegrator {
             String patched = patchBlockProperties(content);
             Files.writeString(bpPath, patched, StandardCharsets.UTF_8);
 
+            Path glslPath = dirPath.resolve("shaders/lib/colors/blocklightColors.glsl");
+            if (Files.exists(glslPath)) {
+                String glsl = Files.readString(glslPath, StandardCharsets.UTF_8);
+                glsl = patchGlslColors(glsl);
+                Files.writeString(glslPath, glsl, StandardCharsets.UTF_8);
+            }
+
             ensureShaderConfig(dirPath);
             LOGGER.info("[JustLights] Successfully integrated into: {}", dirPath.getFileName());
         } catch (Exception e) {
             LOGGER.warn("[JustLights] Could not auto-integrate directory {}: {}", dirPath.getFileName(), e.getMessage());
         }
+    }
+
+    private static String patchGlslColors(String content) {
+        content = content.replace("float candleColorMult = 2.0;", "float candleColorMult = 7.0;");
+        content = content.replace("float candleColorMult = 4.0;", "float candleColorMult = 7.0;");
+        content = content.replace("vec3(1.0, 0.1, 0.1)", "vec3(1.3, 0.0, 0.0)"); // Red
+        content = content.replace("vec3(1.0, 0.4, 0.1)", "vec3(1.3, 0.35, 0.0)"); // Orange
+        content = content.replace("vec3(1.0, 1.0, 0.1)", "vec3(1.2, 1.2, 0.0)"); // Yellow
+        content = content.replace("vec3(0.1, 1.0, 0.1)", "vec3(0.0, 1.5, 0.0)"); // Lime
+        content = content.replace("vec3(0.3, 1.0, 0.3)", "vec3(0.0, 1.4, 0.1)"); // Green
+        content = content.replace("vec3(0.3, 0.8, 1.0)", "vec3(0.0, 1.1, 1.4)"); // Cyan
+        content = content.replace("vec3(0.5, 0.65, 1.0)", "vec3(0.1, 0.7, 1.4)"); // Light Blue
+        content = content.replace("vec3(0.1, 0.15, 1.0)", "vec3(0.0, 0.1, 1.5)"); // Blue
+        content = content.replace("vec3(0.7, 0.3, 1.0)", "vec3(0.9, 0.0, 1.4)"); // Purple
+        content = content.replace("vec3(1.0, 0.1, 1.0)", "vec3(1.4, 0.0, 1.2)"); // Magenta
+        content = content.replace("vec3(1.0, 0.4, 1.0)", "vec3(1.4, 0.2, 0.9)"); // Pink
+        return content;
     }
 
     private static String patchBlockProperties(String original) {
@@ -209,14 +237,11 @@ public class ShaderpackIntegrator {
                 }
             }
 
-            // Ensure colored lighting and candle colored light are enabled with natural balanced saturation
+            // Ensure intensely colored lighting, high saturation, and atmospheric fog are enabled
             properties.put("COLORED_CANDLE_LIGHT", "true");
-            if (!properties.containsKey("COLORED_LIGHT_SATURATION") || "125".equals(properties.get("COLORED_LIGHT_SATURATION"))) {
-                properties.put("COLORED_LIGHT_SATURATION", "100");
-            }
-            if (!properties.containsKey("COLORED_LIGHT_FOG_I") || "1.50".equals(properties.get("COLORED_LIGHT_FOG_I"))) {
-                properties.put("COLORED_LIGHT_FOG_I", "1.00");
-            }
+            properties.put("COLORED_LIGHT_SATURATION", "125");
+            properties.put("COLORED_LIGHT_FOG", "true");
+            properties.put("COLORED_LIGHT_FOG_I", "1.50");
             if (!properties.containsKey("COLORED_LIGHTING") || "0".equals(properties.get("COLORED_LIGHTING"))) {
                 properties.put("COLORED_LIGHTING", "512");
             }
