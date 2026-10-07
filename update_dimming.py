@@ -52,9 +52,19 @@ def generate_dimming_and_blockstates():
             for b in [1, 2, 3]:
                 for lit in ["false", "true"]:
                     key = f"auto={auto},brightness={b},lit={lit}"
-                    model = f"justlights:block/{color}_lamp" if lit == "true" else f"justlights:block/{color}_lamp_off"
+                    model = f"justlights:block/{color}_lamp_on" if lit == "true" else f"justlights:block/{color}_lamp_off"
                     lamp_variants[key] = {"model": model}
         write_json(os.path.join(blockstates, f"{color}_lamp.json"), {"variants": lamp_variants})
+
+        # Also ensure {color}_lamp.json exists in models/block as an alias to {color}_lamp_on.json
+        models_block = os.path.join(ASSETS_DIR, "models", "block")
+        lamp_alias = {
+            "parent": "minecraft:block/cube_all",
+            "textures": {
+                "all": f"justlights:block/{color}_lamp_on"
+            }
+        }
+        write_json(os.path.join(models_block, f"{color}_lamp.json"), lamp_alias)
 
         # 2. Floor Light Blockstate with BRIGHTNESS (1, 2, 3)
         fl_variants = {}

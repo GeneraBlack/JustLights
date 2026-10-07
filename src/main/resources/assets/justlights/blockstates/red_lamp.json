@@ -4,37 +4,37 @@
       "model": "justlights:block/red_lamp_off"
     },
     "auto=false,brightness=1,lit=true": {
-      "model": "justlights:block/red_lamp"
+      "model": "justlights:block/red_lamp_on"
     },
     "auto=false,brightness=2,lit=false": {
       "model": "justlights:block/red_lamp_off"
     },
     "auto=false,brightness=2,lit=true": {
-      "model": "justlights:block/red_lamp"
+      "model": "justlights:block/red_lamp_on"
     },
     "auto=false,brightness=3,lit=false": {
       "model": "justlights:block/red_lamp_off"
     },
     "auto=false,brightness=3,lit=true": {
-      "model": "justlights:block/red_lamp"
+      "model": "justlights:block/red_lamp_on"
     },
     "auto=true,brightness=1,lit=false": {
       "model": "justlights:block/red_lamp_off"
     },
     "auto=true,brightness=1,lit=true": {
-      "model": "justlights:block/red_lamp"
+      "model": "justlights:block/red_lamp_on"
     },
     "auto=true,brightness=2,lit=false": {
       "model": "justlights:block/red_lamp_off"
     },
     "auto=true,brightness=2,lit=true": {
-      "model": "justlights:block/red_lamp"
+      "model": "justlights:block/red_lamp_on"
     },
     "auto=true,brightness=3,lit=false": {
       "model": "justlights:block/red_lamp_off"
     },
     "auto=true,brightness=3,lit=true": {
-      "model": "justlights:block/red_lamp"
+      "model": "justlights:block/red_lamp_on"
     }
   }
 }

@@ -476,9 +476,9 @@ def generate_expansion():
         write_json(os.path.join(blockstates, f"{color}_lamp.json"), {
             "variants": {
                 "auto=false,lit=false": {"model": f"justlights:block/{color}_lamp_off"},
-                "auto=false,lit=true":  {"model": f"justlights:block/{color}_lamp"},
+                "auto=false,lit=true":  {"model": f"justlights:block/{color}_lamp_on"},
                 "auto=true,lit=false":  {"model": f"justlights:block/{color}_lamp_off"},
-                "auto=true,lit=true":   {"model": f"justlights:block/{color}_lamp"}
+                "auto=true,lit=true":   {"model": f"justlights:block/{color}_lamp_on"}
             }
         })
 
