@@ -87,6 +87,15 @@ public class ShaderpackIntegrator {
                         }
                     }
                 }
+                ZipEntry candleEntry = zip.getEntry("shaders/lib/materials/specificMaterials/terrain/candle.glsl");
+                if (candleEntry != null) {
+                    try (InputStream is = zip.getInputStream(candleEntry)) {
+                        String candleContent = new String(is.readAllBytes(), StandardCharsets.UTF_8);
+                        if (!candleContent.contains("blockResCheck")) {
+                            needsPatch = true;
+                        }
+                    }
+                }
             }
 
             if (!needsPatch) {
@@ -122,6 +131,14 @@ public class ShaderpackIntegrator {
                         String content = new String(data, StandardCharsets.UTF_8);
                         content = patchGlslColors(content);
                         data = content.getBytes(StandardCharsets.UTF_8);
+                    } else if ("shaders/lib/materials/specificMaterials/terrain/candle.glsl".equals(srcEntry.getName())) {
+                        String content = new String(data, StandardCharsets.UTF_8);
+                        content = patchCandleGlsl(content);
+                        data = content.getBytes(StandardCharsets.UTF_8);
+                    } else if ("shaders/lib/materials/materialHandling/terrainIPBR.glsl".equals(srcEntry.getName())) {
+                        String content = new String(data, StandardCharsets.UTF_8);
+                        content = patchTerrainIpbrGlsl(content);
+                        data = content.getBytes(StandardCharsets.UTF_8);
                     }
 
                     ZipEntry newEntry = new ZipEntry(srcEntry.getName());
@@ -131,8 +148,18 @@ public class ShaderpackIntegrator {
                 }
             }
 
-            // Atomically replace
-            Files.move(tempZip, zipPath, StandardCopyOption.REPLACE_EXISTING);
+            // Replace or in-place overwrite if locked on Windows
+            try {
+                Files.move(tempZip, zipPath, StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException moveEx) {
+                try (java.nio.channels.FileChannel src = java.nio.channels.FileChannel.open(tempZip, StandardOpenOption.READ);
+                     java.nio.channels.FileChannel dst = java.nio.channels.FileChannel.open(zipPath, StandardOpenOption.WRITE)) {
+                    dst.position(0);
+                    dst.transferFrom(src, 0, src.size());
+                    dst.truncate(src.size());
+                }
+                Files.deleteIfExists(tempZip);
+            }
             ensureShaderConfig(zipPath);
             LOGGER.info("[JustLights] Successfully integrated colored lighting into: {}", fileName);
 
@@ -160,11 +187,57 @@ public class ShaderpackIntegrator {
                 Files.writeString(glslPath, glsl, StandardCharsets.UTF_8);
             }
 
+            Path candlePath = dirPath.resolve("shaders/lib/materials/specificMaterials/terrain/candle.glsl");
+            if (Files.exists(candlePath)) {
+                String candleGlsl = Files.readString(candlePath, StandardCharsets.UTF_8);
+                candleGlsl = patchCandleGlsl(candleGlsl);
+                Files.writeString(candlePath, candleGlsl, StandardCharsets.UTF_8);
+            }
+
+            Path terrainPath = dirPath.resolve("shaders/lib/materials/materialHandling/terrainIPBR.glsl");
+            if (Files.exists(terrainPath)) {
+                String terrainGlsl = Files.readString(terrainPath, StandardCharsets.UTF_8);
+                terrainGlsl = patchTerrainIpbrGlsl(terrainGlsl);
+                Files.writeString(terrainPath, terrainGlsl, StandardCharsets.UTF_8);
+            }
+
             ensureShaderConfig(dirPath);
             LOGGER.info("[JustLights] Successfully integrated into: {}", dirPath.getFileName());
         } catch (Exception e) {
             LOGGER.warn("[JustLights] Could not auto-integrate directory {}: {}", dirPath.getFileName(), e.getMessage());
         }
+    }
+
+    private static String patchCandleGlsl(String content) {
+        if (content.contains("blockResCheck")) return content;
+        String oldWick = "noSmoothLighting = true;\n\ncolor.rgb *= 1.0 + 0.7 * pow2(max(-signMidCoordPos.y + 0.6, float(NdotU > 0.9) * 1.6));";
+        String oldWickCrLf = "noSmoothLighting = true;\r\n\r\ncolor.rgb *= 1.0 + 0.7 * pow2(max(-signMidCoordPos.y + 0.6, float(NdotU > 0.9) * 1.6));";
+        String newWick = "float blockResCheck = absMidCoordPos.x * atlasSize.x;\n" +
+                "if (blockResCheck < 3.0) {\n" +
+                "    noSmoothLighting = true;\n\n" +
+                "    color.rgb *= 1.0 + 0.7 * pow2(max(-signMidCoordPos.y + 0.6, float(NdotU > 0.9) * 1.6));\n" +
+                "} else {\n" +
+                "    noDirectionalShading = true;\n" +
+                "    lmCoordM.x = 1.0;\n" +
+                "}";
+        if (content.contains(oldWickCrLf)) {
+            content = content.replace(oldWickCrLf, newWick);
+        } else if (content.contains(oldWick)) {
+            content = content.replace(oldWick, newWick);
+        } else if (content.contains("color.rgb *= 1.0 + 0.7 * pow2")) {
+            content = content.replace("noSmoothLighting = true;", "float blockResCheck = absMidCoordPos.x * atlasSize.x;\nif (blockResCheck < 3.0) {\n    noSmoothLighting = true;");
+            content = content.replace("color.rgb *= 1.0 + 0.7 * pow2(max(-signMidCoordPos.y + 0.6, float(NdotU > 0.9) * 1.6));",
+                    "    color.rgb *= 1.0 + 0.7 * pow2(max(-signMidCoordPos.y + 0.6, float(NdotU > 0.9) * 1.6));\n} else {\n    noDirectionalShading = true;\n    lmCoordM.x = 1.0;\n}");
+        }
+        return content;
+    }
+
+    private static String patchTerrainIpbrGlsl(String content) {
+        content = content.replace("noSmoothLighting = true;\r\n                                        lmCoordM.x = 0.92;",
+                "if (absMidCoordPos.x * atlasSize.x < 3.0) noSmoothLighting = true;\r\n                                        lmCoordM.x = 0.92;");
+        content = content.replace("noSmoothLighting = true;\n                                        lmCoordM.x = 0.92;",
+                "if (absMidCoordPos.x * atlasSize.x < 3.0) noSmoothLighting = true;\n                                        lmCoordM.x = 0.92;");
+        return content;
     }
 
     private static String patchGlslColors(String content) {
