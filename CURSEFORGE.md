@@ -11,6 +11,15 @@ Whether you're decorating a medieval tavern, a sprawling town colony, an industr
 
 ---
 
+## 🚀 What's New in v1.0.2
+
+* 💡 **Modern Flat LED Panel Design:** Switched connected lamp fixtures to a modern, solid-color LED diffuser panel design. Eliminates the old static radial "bulb" gradients, removing all offset hotspots, dark seams, and center voids in multi-block fixtures.
+* 🔗 **Flawless Connected Textures (CTM):** 2×2 ceiling panels, long horizontal light strips, and T-junction doorways now connect into unified, uninterrupted glowing light fixtures with 0-pixel seam variance.
+* 🛡️ **Smooth Lighting & Ambient Occlusion Fix:** Disabled vertex ambient occlusion on all lamp block models (`ambientocclusion: false`). Prevents Minecraft and Sodium from slicing 45-degree diagonal shadows across metal bezels and faces when placed against ceilings or walls.
+* 🌟 **Optimized Shader Bloom:** Uniform emissive maps (`_e.png`) provide rich, smooth volumetric bloom across the entire fixture surface when paired with **Complementary Reimagined**, **Euphoria Patches**, or **BSL**.
+
+---
+
 ## ✨ Key Features
 
 * 🎨 **All 16 Minecraft Dye Colors:** Every single fixture is available in all 16 colors.
