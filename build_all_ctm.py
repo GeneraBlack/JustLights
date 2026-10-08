@@ -104,75 +104,87 @@ TILE_DEFINITIONS = {
     46: (26, ['TL', 'TR', 'BL', 'BR']),
 }
 
-def generate_tiles(collage_img, bw=12):
+def get_color_from_dist(dist, profile):
+    d_clamped = np.clip(dist, 0.0, 52.0)
+    idx_floor = np.floor(d_clamped).astype(int)
+    idx_ceil = np.clip(idx_floor + 1, 0, 52)
+    frac = (d_clamped - idx_floor)[..., None]
+    return profile[idx_floor] * (1.0 - frac) + profile[idx_ceil] * frac
+
+def compute_distance_field(has_t, has_b, has_l, has_r, caps):
     """
-    Extracts all 47 CTM tiles from the artist's authentic 512x512 collage.
-    - Bulbs remain 100% natural, perfectly centered at (64, 64) with no artificial warping.
-    - Open matching edges are unified with a 1-pixel average so that seam difference across blocks is mathematically 0.
-    - All 16 cardinal tiles preserve their authentic borders, corners, bolts, and rich colors.
-    - Inner corner caps are cleanly applied for the remaining 31 CTM tiles.
+    Computes exact continuous distance field to the nearest physical metal border.
+    Where a border exists, distance falls off towards 0 at the border (d=0..52).
+    Where no border exists, light connects continuously across the edge (d >= 52).
+    Inner corner caps create smooth rounded corner falloffs.
     """
-    cardinal_tiles = {}
+    Y, X = np.ogrid[:128, :128]
+    d = np.full((128, 128), 999.0)
+    
+    if has_t: d = np.minimum(d, Y - 12.0)
+    if has_b: d = np.minimum(d, 115.0 - Y)
+    if has_l: d = np.minimum(d, X - 12.0)
+    if has_r: d = np.minimum(d, 115.0 - X)
+    
+    for cap in caps:
+        if cap == 'TL':
+            d_cap = np.where((X > 12) & (Y > 12), np.sqrt((X - 12.0)**2 + (Y - 12.0)**2),
+                    np.where(X <= 12, np.maximum(0.0, Y - 12.0), np.maximum(0.0, X - 12.0)))
+            d = np.minimum(d, d_cap)
+        elif cap == 'TR':
+            d_cap = np.where((X < 115) & (Y > 12), np.sqrt((115.0 - X)**2 + (Y - 12.0)**2),
+                    np.where(X >= 115, np.maximum(0.0, Y - 12.0), np.maximum(0.0, 115.0 - X)))
+            d = np.minimum(d, d_cap)
+        elif cap == 'BL':
+            d_cap = np.where((X > 12) & (Y < 115), np.sqrt((X - 12.0)**2 + (115.0 - Y)**2),
+                    np.where(X <= 12, np.maximum(0.0, 115.0 - Y), np.maximum(0.0, X - 12.0)))
+            d = np.minimum(d, d_cap)
+        elif cap == 'BR':
+            d_cap = np.where((X < 115) & (Y < 115), np.sqrt((115.0 - X)**2 + (115.0 - Y)**2),
+                    np.where(X >= 115, np.maximum(0.0, 115.0 - Y), np.maximum(0.0, 115.0 - X)))
+            d = np.minimum(d, d_cap)
+            
+    return d
+
+def generate_tile(tile_idx, raw_tiles, profile, iso):
+    base_id, caps = TILE_DEFINITIONS[tile_idx]
+    if tile_idx == 0:
+        return Image.fromarray(iso)
+        
+    has_t, has_b, has_l, has_r = CARDINAL_BORDERS[base_id]
+    d = compute_distance_field(has_t, has_b, has_l, has_r, caps)
+    glass_rgb = get_color_from_dist(d, profile)
+    
+    out = raw_tiles[base_id].copy()
+    
+    x_min = 12 if has_l else 0
+    x_max = 116 if has_r else 128
+    y_min = 12 if has_t else 0
+    y_max = 116 if has_b else 128
+    out[y_min:y_max, x_min:x_max, :3] = np.clip(glass_rgb[y_min:y_max, x_min:x_max], 0, 255).astype(np.uint8)
+    
+    for cap in caps:
+        if cap == 'TL': out[:12, :12, :] = iso[:12, :12, :]
+        elif cap == 'TR': out[:12, 116:, :] = iso[:12, 116:, :]
+        elif cap == 'BL': out[116:, :12, :] = iso[116:, :12, :]
+        elif cap == 'BR': out[116:, 116:, :] = iso[116:, 116:, :]
+        
+    return Image.fromarray(out)
+
+def generate_all_47_tiles(collage_img):
+    raw_tiles = {}
     for tile_id, (r, c) in CARDINAL_ROW_COL.items():
         box = (c * 128, r * 128, (c + 1) * 128, (r + 1) * 128)
-        cardinal_tiles[tile_id] = np.array(collage_img.crop(box)).astype(float)
+        raw_tiles[tile_id] = np.array(collage_img.crop(box))
 
-    # 1. Unify horizontal open seams (e.g. Tile 1 right, Tile 2 left/right, Tile 3 left, etc.)
-    # In Tile 2 (TB--), left edge (x=0) and right edge (x=127) meet when repeated.
-    t2 = cardinal_tiles[2]
-    h_seam_profile = (t2[:, 0, :] + t2[:, 127, :]) / 2.0
+    iso = raw_tiles[0]
+    profile = iso[12:65, 64, :3].astype(float)
     
-    # Apply to all tiles that have an open left or right edge in the horizontal strip / interior
-    for tid, (has_t, has_b, has_l, has_r) in CARDINAL_BORDERS.items():
-        arr = cardinal_tiles[tid]
-        if not has_l and (has_t and has_b):
-            arr[:, 0, :] = h_seam_profile
-        if not has_r and (has_t and has_b):
-            arr[:, 127, :] = h_seam_profile
-
-    # 2. Unify vertical open seams (e.g. Tile 12 bottom, Tile 24 top/bottom, Tile 36 top)
-    t24 = cardinal_tiles[24]
-    v_seam_profile = (t24[0, :, :] + t24[127, :, :]) / 2.0
-    for tid, (has_t, has_b, has_l, has_r) in CARDINAL_BORDERS.items():
-        arr = cardinal_tiles[tid]
-        if not has_t and (has_l and has_r):
-            arr[0, :, :] = v_seam_profile
-        if not has_b and (has_l and has_r):
-            arr[127, :, :] = v_seam_profile
-
-    # 3. Unify 2D interior tile 26 (----) seams
-    t26 = cardinal_tiles[26]
-    t26[:, 0, :] = (t26[:, 0, :] + t26[:, 127, :]) / 2.0
-    t26[:, 127, :] = t26[:, 0, :]
-    t26[0, :, :] = (t26[0, :, :] + t26[127, :, :]) / 2.0
-    t26[127, :, :] = t26[0, :, :]
-
-    # Convert back to uint8 PIL Images
-    cardinal_imgs = {tid: Image.fromarray(np.clip(arr, 0, 255).astype(np.uint8)) for tid, arr in cardinal_tiles.items()}
-
-    iso = cardinal_imgs[0]
-    cap_tl = iso.crop((0, 0, bw, bw))
-    cap_tr = iso.crop((128 - bw, 0, 128, bw))
-    cap_bl = iso.crop((0, 128 - bw, bw, 128))
-    cap_br = iso.crop((128 - bw, 128 - bw, 128, 128))
-
     tiles = {}
-    for tile_idx in range(47):
-        base_id, caps = TILE_DEFINITIONS[tile_idx]
-        img = cardinal_imgs[base_id].copy()
-        for cap in caps:
-            if cap == 'TL':
-                img.paste(cap_tl, (0, 0))
-            elif cap == 'TR':
-                img.paste(cap_tr, (128 - bw, 0))
-            elif cap == 'BL':
-                img.paste(cap_bl, (0, 128 - bw))
-            elif cap == 'BR':
-                img.paste(cap_br, (128 - bw, 128 - bw))
-        tiles[tile_idx] = img
-
-    return tiles, iso
-
+    for i in range(47):
+        tiles[i] = generate_tile(i, raw_tiles, profile, iso)
+        
+    return tiles, Image.fromarray(iso)
 
 def main():
     os.makedirs(OPTIFINE_CTM_DIR, exist_ok=True)
@@ -181,7 +193,7 @@ def main():
     with open(os.path.join(OPTIFINE_DIR, 'emissive.properties'), 'w', encoding='utf-8') as f:
         f.write("# OptiFine / Continuity emissive textures\nsuffix.emissive=_e\n")
 
-    print(f"Generating CTM textures from {SRC_DIR}...")
+    print(f"Generating true connected continuous CTM textures from {SRC_DIR}...")
 
     for color in COLORS:
         print(f"Processing {color} lamp...")
@@ -194,9 +206,9 @@ def main():
         img_off = Image.open(path_src_off).convert('RGBA')
         img_e = Image.open(path_src_e).convert('RGBA')
         
-        tiles_on, iso_on = generate_tiles(img_on)
-        tiles_off, iso_off = generate_tiles(img_off)
-        tiles_e, iso_e = generate_tiles(img_e)
+        tiles_on, iso_on = generate_all_47_tiles(img_on)
+        tiles_off, iso_off = generate_all_47_tiles(img_off)
+        tiles_e, iso_e = generate_all_47_tiles(img_e)
         
         # 1. Lit state CTM directory
         dir_on = os.path.join(OPTIFINE_CTM_DIR, f"{color}_lamp_on")
@@ -232,7 +244,7 @@ def main():
         iso_off.save(os.path.join(TEXTURES_DIR, f"{color}_lamp_off.png"))
         iso_e.save(os.path.join(TEXTURES_DIR, f"{color}_lamp_on_e.png"))
 
-    print("All 16 colors successfully generated with authentic centered bulbs and seamless edges!")
+    print("All 16 colors successfully generated with true continuous connected lighting!")
 
 if __name__ == '__main__':
     main()
