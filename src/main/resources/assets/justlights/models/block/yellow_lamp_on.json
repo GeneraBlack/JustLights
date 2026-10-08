@@ -2,5 +2,6 @@
   "parent": "minecraft:block/cube_all",
   "textures": {
     "all": "justlights:block/yellow_lamp_on"
-  }
+  },
+  "ambientocclusion": false
 }
