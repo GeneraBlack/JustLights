@@ -74,7 +74,7 @@ Whether you're decorating a medieval tavern, a sprawling town colony, an industr
 | Action | Control | Description |
 | :--- | :--- | :--- |
 | **Toggle Light** | **Right-Click** | Turns the lamp or floor grate on/off. Features a memory function that remembers your set brightness! |
-| **Cycle Brightness** | **Shift + Right-Click** | Cycles through **100% (Light 15)** $\rightarrow$ **66% (Light 10)** $\rightarrow$ **33% (Light 5)** $\rightarrow$ **Streetlight Auto**. |
+| **Cycle Brightness** | **Shift + Right-Click** | Cycles through **100% (Light 15)** → **66% (Light 10)** → **33% (Light 5)** → **Streetlight Auto**. |
 | **In-World Recolor** | **Right-Click with Dye** | Instantly changes the fixture's color without breaking it, preserving its on/off state and direction! |
 | **Auto Streetlight** | **Shift + Right-Click** | Switches into automatic mode: light turns on when night falls and turns off at sunrise. |
 
@@ -84,8 +84,8 @@ Whether you're decorating a medieval tavern, a sprawling town colony, an industr
 
 JustLights is built from the ground up for high-end shaders (**Complementary Reimagined**, **Euphoria Patches**, and **BSL**).
 
-> [!TIP]
-> **Automatic Shader Integration:** JustLights automatically detects Complementary Reimagined and BSL in your `shaderpacks` folder upon game launch and configures them so colored lighting works seamlessly out-of-the-box!
+> 💡 **Automatic Shader Integration:**  
+> JustLights automatically detects Complementary Reimagined and BSL in your `shaderpacks` folder upon game launch and configures them so colored lighting works seamlessly out-of-the-box!
 
 ### 🌟 Recommended Complementary Settings (For Ultra-Vibrant Colored Radiance):
 To get the most dramatic, vivid, and atmospheric colored light rays and volumetric fog, open **Options → Video Settings → Shader Packs → Shader Options**:
